@@ -465,8 +465,12 @@ void Mouse_CursorMoved(float xrel,float yrel,float x,float y,bool emulate) {
 		mouse.y += dy;
 	} else {
 		if (CurMode->type == M_TEXT) {
-			mouse.x = x*CurMode->swidth;
-			mouse.y = y*CurMode->sheight * 8 / CurMode->cheight;
+			mouse.x = x*real_readw(BIOSMEM_SEG,BIOSMEM_NB_COLS)*8;
+			if (mouse.mode < 2) {
+				// For 40 column modes
+				mouse.x *= 2;
+			}
+			mouse.y = y*(real_readb(BIOSMEM_SEG,BIOSMEM_NB_ROWS)+1)*8;
 		} else if ((mouse.max_x < 2048) || (mouse.max_y < 2048) || (mouse.max_x != mouse.max_y)) {
 			if ((mouse.max_x > 0) && (mouse.max_y > 0)) {
 				mouse.x = x*mouse.max_x;
